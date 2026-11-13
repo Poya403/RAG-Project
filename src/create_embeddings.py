@@ -1,5 +1,4 @@
 import json
-from pathlib import Path
 from sentence_transformers import SentenceTransformer
 
 def create_embeddings(input_file, output_file):
