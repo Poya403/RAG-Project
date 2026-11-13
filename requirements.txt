@@ -1,3 +1,5 @@
 
 PyMuPDF>=1.26.0
 python-docx
+sentence-transformers
+chromadb
