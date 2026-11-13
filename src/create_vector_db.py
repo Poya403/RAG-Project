@@ -18,7 +18,6 @@ def create_vector_db(embedding_file, db_dir):
 
         # Extract data from each embedding record
         for index, item in enumerate(embeddings_data):
-
             if not isinstance(item, dict):
                 raise ValueError(f"Invalid record at index {index}.")
 
@@ -59,20 +58,15 @@ def create_vector_db(embedding_file, db_dir):
         if len(dimensions) != 1:
             raise ValueError("Embedding dimensions are inconsistent.")
 
-        print("========== Vector Database ==========")
+        print("Vector Database :")
         print(f"Number of records: {len(ids)}")
         print(f"Embedding dimensions: {dimensions.pop()}")
 
         # Create persistent ChromaDB client
-        client = chromadb.PersistentClient(
-            path=str(db_dir)
-        )
+        client = chromadb.PersistentClient(path=str(db_dir))
 
         # Create or retrieve collection
-        collection = client.get_or_create_collection(
-            name=COLLECTION_NAME,
-            metadata={"hnsw:space": "cosine"}
-        )
+        collection = client.get_or_create_collection(name=COLLECTION_NAME, metadata={"hnsw:space": "cosine"})
 
         # Store embeddings, documents and metadata
         collection.upsert(
