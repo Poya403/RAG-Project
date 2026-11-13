@@ -3,43 +3,29 @@
 
 ## Overview
 
-Student RAG is a conversational question-answering system designed to help students understand undergraduate academic regulations at Shahrood University of Technology.
+Student RAG is a question-answering system designed to help students understand undergraduate academic regulations at Shahrood University of Technology.
 
-The system uses Retrieval-Augmented Generation (RAG) to retrieve relevant information from official academic regulations and generate answers based on the retrieved content.
+The system uses Retrieval-Augmented Generation (RAG) to retrieve relevant information from official academic regulations and generate accurate, context-aware answers to students' questions.
 
-It is also designed to maintain student profiles and relevant conversation history, allowing the system to provide more context-aware and personalized responses.
+Its goal is to make accessing and understanding academic regulations easier, faster, and more convenient for students.
 
-## Project Objectives
+## Main Features
 
-- Extract text from academic regulation PDF documents.
-- Retrieve relevant sections of the regulations based on student questions.
-- Generate answers grounded in the retrieved documents.
-- Maintain student profiles, including academic information such as major and admission year.
-- Use relevant conversation history to understand follow-up questions.
-- Provide source references, such as page numbers, to support generated answers.
-
-## Planned Features
-
-- PDF text extraction and document preprocessing.
-- Text chunking and metadata management.
-- Semantic search using text embeddings.
-- Vector-based document retrieval.
-- Integration with a Large Language Model (LLM).
-- Conversation history and student profile management.
-- A simple chat interface.
-- Testing and evaluation of answer quality.
+- Answering questions based on official academic regulations.
+- Semantic search to retrieve relevant regulatory information.
+- Generating responses using a Large Language Model (LLM).
+- Providing references to the original regulatory documents.
+- Supporting conversation history and student-related context.
 
 ## Technology Stack
 
 - Python
-- PyMuPDF for PDF text extraction
-- Sentence Transformers for text embeddings
-- FAISS or Chroma for vector search
-- SQLite for storing student profiles and conversation history
-- A compatible Large Language Model (LLM)
-- Streamlit for the user interface
-
-Additional dependencies will be introduced as the project develops.
+- PyMuPDF
+- Sentence Transformers
+- ChromaDB
+- Large Language Models (LLMs)
+- SQLite
+- Streamlit
 
 ## Project Structure
 
@@ -47,25 +33,17 @@ Additional dependencies will be introduced as the project develops.
 student-rag/
 ├── data/
 │   ├── raw/
-│   └── processed/
+│   ├── processed/
+│   └── vector_db/
 ├── src/
 ├── tests/
 ├── requirements.txt
 └── README.md
 ```
 
-- `data/raw/`: Original PDF documents.
-- `data/processed/`: Extracted and processed document data.
-- `src/`: Application source code.
-- `tests/`: Automated tests and evaluation scripts.
-- `requirements.txt`: Python dependencies.
-- `README.md`: Project documentation.
-
 ## Setup
 
 ### 1. Create a Virtual Environment
-
-On Windows, open a terminal in the project directory and run:
 
 ```powershell
 python -m venv .venv
@@ -84,32 +62,11 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-### 4. Add the Academic Regulations PDF
+## Academic Regulations Source
 
-Place the original PDF document in the following directory:
-
-```text
-data/raw/
-```
-
-Official document source:
+The system uses official academic regulations published by Shahrood University of Technology.
 
 [Shahrood University of Technology - Academic Regulations](https://shahroodut.ac.ir/fa/download.php?id=1111174984)
-
-## Development Status
-
-The project is currently in its initial setup stage.
-
-The first implementation milestone is to extract text from the academic regulations PDF and verify the quality of the extracted content.
-
-Subsequent milestones will cover document processing, retrieval, answer generation, conversational memory, and evaluation.
-
-## Important Notes
-
-- Answers should be grounded in the retrieved official regulations.
-- The system should indicate when the available sources are insufficient to answer a question reliably.
-- Student-specific information should be used only when relevant to the question.
-- Retrieved answers should include source references whenever possible.
 
 ## License
 
