@@ -18,7 +18,7 @@ def main():
             print("Text extraction was successful.")
             save_text.save_text(text, output_file)
             chunks = chunk_text.chunk_text(text)
-            save_chunks.save_chunks(chunks, output_chunks)
+            save_chunks.save_chunks(chunks, output_chunks, input_file.name)
         else:
             print("Warning: No text was extracted.")
 
