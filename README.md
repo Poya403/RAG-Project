@@ -40,6 +40,15 @@ student-rag/
 ├── requirements.txt
 └── README.md
 ```
+Directory and File Description
+
+data/: Contains the data used by the system.
+raw/: Stores the original academic regulations PDF documents.
+processed/: Stores extracted and processed document data.
+vector_db/: Stores the vector database used for information retrieval.
+src/: Contains the main application source code.
+tests/: Contains test scripts for checking and evaluating the system.
+requirements.txt: Lists the Python dependencies required by the project.
 
 ## Setup
 
