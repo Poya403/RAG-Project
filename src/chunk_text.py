@@ -1,6 +1,4 @@
-
 import re
-
 
 def chunk_text(text, max_chunk_size=2000):
     chunks = []
@@ -44,6 +42,22 @@ def chunk_text(text, max_chunk_size=2000):
 
 
 def chunk_long_article(article):
+    # Handle article 12 separately
+    if re.match(r'^\s*ماده\s*[.٫]?\s*12\b', article):
+        split_position = re.search(
+            r'(?m)^\s*ج\s*[\)]',
+            article
+        )
+
+        if split_position:
+            first_chunk = article[:split_position.start()].strip()
+
+            second_chunk = (
+                "ماده ۱۲ (ادامه):\n" +
+                article[split_position.start():].strip()
+            )
+
+            return [first_chunk, second_chunk]
 
     # Find all note boundaries
     notes = re.split(
@@ -80,9 +94,7 @@ def chunk_long_article(article):
 
     return chunks
 
-
 def chunk_appendix(appendix):
-
     # Separate document information from the definitions
     metadata_pattern = r'(?m)(?=^\s*عنوان\s*سند\s*:)'
 
