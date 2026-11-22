@@ -1,3 +1,5 @@
+import json
+
 from src.retrieval import retrieve
 from src.generation import generate_answer
 
@@ -11,13 +13,29 @@ def answer_question(question, db_dir, top_k=5):
 
     # Check retrieved results
     if not retrieved_chunks:
-        yield "اطلاعات کافی در آیین‌نامه وجود ندارد."
+        yield {
+            "type": "token",
+            "content": "اطلاعات کافی در آیین‌نامه وجود ندارد."
+        }
         return
 
-    # Combine retrieved texts into one context
-    context = "\n\n".join(
+    # Extract retrieved texts
+    sources = [
         chunk["text"] for chunk in retrieved_chunks
-    )
-    print(context)
+    ]
+
+    # Send retrieved sources
+    yield {
+        "type": "sources",
+        "sources": sources
+    }
+
+    # Combine retrieved texts into one context
+    context = "\n\n".join(sources)
+
     # Generate the final answer
-    yield from generate_answer(question, context)
+    for token in generate_answer(question, context):
+        yield {
+            "type": "token",
+            "content": token
+        }
