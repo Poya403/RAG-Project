@@ -4,7 +4,7 @@ from pathlib import Path
 
 from flask import Flask, render_template, request, jsonify, Response
 from src.rag_pipeline import answer_question
-
+from src.chat_database import initialize_database
 
 # Define project paths
 BASE_DIR = Path(__file__).resolve().parent
@@ -18,6 +18,8 @@ app = Flask(
     static_folder="Front-end/static"
 )
 
+# Initialize chat history database
+initialize_database()
 
 @app.route("/")
 def index():
