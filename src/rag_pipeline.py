@@ -18,6 +18,6 @@ def answer_question(question, db_dir, top_k=5):
     context = "\n\n".join(
         chunk["text"] for chunk in retrieved_chunks
     )
-
+    print(context)
     # Generate the final answer
     yield from generate_answer(question, context)
