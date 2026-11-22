@@ -8,8 +8,7 @@ from src.chat_database import initialize_database
 
 # Define project paths
 BASE_DIR = Path(__file__).resolve().parent
-DB_DIR = BASE_DIR / "data" / "vector_db"
-
+DB_DIR = BASE_DIR / "data" / "chat_history.db"
 
 # Create Flask application
 app = Flask(
@@ -19,7 +18,7 @@ app = Flask(
 )
 
 # Initialize chat history database
-initialize_database()
+initialize_database(DB_DIR)
 
 @app.route("/")
 def index():
