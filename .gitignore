@@ -16,3 +16,6 @@ __pycache__/
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Vector DataBase
+data/vector_db/
