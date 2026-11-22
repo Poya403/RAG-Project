@@ -19,3 +19,8 @@ Thumbs.db
 
 # Vector DataBase
 data/vector_db/
+
+# Chat history database
+data/chat_history.db
+data/chat_history.db-shm
+data/chat_history.db-wal

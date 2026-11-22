@@ -5,6 +5,7 @@ import chunk_text
 import save_chunks
 import create_embeddings
 import create_vector_db
+from chat_database import initialize_database
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -14,8 +15,17 @@ def main():
     output_chunks = BASE_DIR / "data" / "processed" / "chunks.json"
     output_embeddings = BASE_DIR / "data" / "processed" / "embeddings.json"
     vector_db_dir = BASE_DIR / "data" / "vector_db"
+    chat_history_db = BASE_DIR / "data" / "chat_history.db"
 
     try:
+        # Check if chat history database already exist
+        if chat_history_db.exists():
+            print("db already exist. Skipping creating chat history database.")
+            return
+        
+        initialize_database(chat_history_db)
+        print("chat history database was created.")
+
         # Check if embeddings already exist
         if output_embeddings.exists():
             print("Embeddings already exist. Skipping processing.")
@@ -35,7 +45,7 @@ def main():
             print("The embedding production phase was successfull.")
 
             create_vector_db.create_vector_db(output_embeddings, vector_db_dir)
-            print("The information was stored in the vector database.")
+            print("The information was stored in the vector database.")    
         else:
             print("Warning: No text was extracted.")
 
