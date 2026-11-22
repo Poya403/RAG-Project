@@ -212,3 +212,24 @@ body {
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+#new-chat-button {
+    display: inline;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: transparent;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    cursor: pointer;
+}
+
+#new-chat-button i {
+    font-size: 20px;
+}
+
+#new-chat-button span {
+    font-size: 15px;
+    padding-right: 10px;
+}
