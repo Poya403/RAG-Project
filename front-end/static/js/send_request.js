@@ -6,6 +6,15 @@ const sendButton = document.getElementById("send-button");
 const chatMessages = document.getElementById("chat-messages");
 const welcomeMessage = document.getElementById("welcome-msg");
 
+let isProcessing = false;
+
+// Update send button state
+function updateSendButton() {
+    sendButton.disabled =
+        questionInput.value.trim() === "" || isProcessing;
+}
+// Update button when input changes
+questionInput.addEventListener("input", updateSendButton);
 
 // Auto scroll to latest message
 function scrollToBottom() {
@@ -56,13 +65,15 @@ function displaySources(sources) {
 
 // Send question to Flask
 async function askQuestion() {
-
     const question = questionInput.value.trim();
 
     // Check empty question
-    if (!question) {
+    if (!question || isProcessing) {
         return;
     }
+
+    isProcessing = true;
+    updateSendButton();
 
     // Change chat layout
     chat.classList.add("chat-started");
@@ -189,9 +200,9 @@ async function askQuestion() {
         console.error(error);
 
     } finally {
-
         // Enable send button
-        sendButton.disabled = false;
+        isProcessing = false;
+        updateSendButton();
         questionInput.focus();
 
     }
@@ -210,3 +221,5 @@ questionInput.addEventListener("keydown", function(event) {
     }
 
 });
+
+updateSendButton();
