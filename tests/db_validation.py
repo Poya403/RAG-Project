@@ -10,7 +10,6 @@ VECTOR_DB_DIR = BASE_DIR / "data" / "vector_db"
 
 COLLECTION_NAME = "regulations"
 
-
 def test_embedding():
     with open(EMBEDDING_FILE, "r", encoding="utf-8") as file:
         data = json.load(file)
@@ -47,7 +46,6 @@ def test_embedding():
     print("PASS: All embedding values are valid.")
 
     print("\nVector DataBase validation completed successfully!")
-
 
 if __name__ == "__main__":
     test_embedding()
