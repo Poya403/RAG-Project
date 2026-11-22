@@ -2,7 +2,9 @@ import json
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError
 
+
 def generate_answer(question, context):
+
     prompt = f"""
         تو یک دستیار آموزشی دانشگاه هستی.
 
@@ -31,9 +33,9 @@ def generate_answer(question, context):
     data = {
         "model": "qwen2.5:7b",
         "prompt": prompt,
-        "stream": False,
+        "stream": True,
+        "keep_alive": "30m",
         "options": {
-            "temperature": 0.2,
             "num_predict": 128
         }
     }
@@ -46,11 +48,20 @@ def generate_answer(question, context):
 
     try:
         with urlopen(request) as response:
-            result = json.loads(response.read().decode("utf-8"))
+
+            for line in response:
+                if line:
+                    result = json.loads(line.decode("utf-8"))
+
+                    token = result.get("response", "")
+
+                    if token:
+                        yield token
+
+                    if result.get("done"):
+                        break
 
     except HTTPError as error:
         print("Ollama API Error:")
         print(error.read().decode("utf-8"))
         raise
-
-    return result["response"].strip()

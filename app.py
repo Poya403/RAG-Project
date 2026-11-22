@@ -1,6 +1,5 @@
-
 from pathlib import Path
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, Response
 from src.rag_pipeline import answer_question
 
 # Define project paths
@@ -13,7 +12,6 @@ app = Flask(
     template_folder="Front-end/templates",
     static_folder="Front-end/static"
 )
-
 
 @app.route("/")
 def index():
@@ -29,13 +27,16 @@ def ask():
         return jsonify({"error": "Please enter a question."}), 400
 
     try:
-        answer = answer_question(
+        answer_generator = answer_question(
             question=question,
             db_dir=DB_DIR,
             top_k=2
         )
 
-        return jsonify({"answer": answer})
+        return Response(
+            answer_generator,
+            content_type="text/plain; charset=utf-8"
+        )
 
     except Exception as error:
         return jsonify({"error": str(error)}), 500

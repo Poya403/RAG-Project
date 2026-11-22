@@ -23,12 +23,12 @@ async function askQuestion() {
     // Clear input
     questionInput.value = "";
 
-    // Show loading message
-    const loadingMessage = document.createElement("p");
-    loadingMessage.className = "bot-message";
-    loadingMessage.textContent = "در حال پردازش سوال...";
-    
-    chatMessages.appendChild(loadingMessage);
+    // Create bot message
+    const answerElement = document.createElement("p");
+    answerElement.className = "bot-message";
+    answerElement.textContent = "در حال پردازش سوال...";
+
+    chatMessages.appendChild(answerElement);
 
     // Disable send button
     sendButton.disabled = true;
@@ -46,31 +46,43 @@ async function askQuestion() {
             })
         });
 
-        const data = await response.json();
-
-        // Remove loading message
-        loadingMessage.remove();
-
+        // Check response status
         if (!response.ok) {
-            throw new Error(data.error || "خطا در دریافت پاسخ");
+            const errorData = await response.json();
+            throw new Error(errorData.error || "خطا در دریافت پاسخ");
         }
 
-        // Display RAG answer
-        const botMessage = document.createElement("p");
-        botMessage.className = "bot-message";
-        botMessage.textContent = data.answer;
+        // Read streaming response
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder("utf-8");
 
-        chatMessages.appendChild(botMessage);
+        // Clear loading message
+        answerElement.textContent = "";
+
+        while (true) {
+
+            const { value, done } = await reader.read();
+
+            if (done) break;
+
+            const token = decoder.decode(value, {
+                stream: true
+            });
+
+            answerElement.textContent += token;
+
+            // Auto scroll
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Decode remaining characters
+        answerElement.textContent += decoder.decode();
 
     } catch (error) {
 
-        loadingMessage.remove();
+        answerElement.textContent = "خطا: " + error.message;
 
-        const errorMessage = document.createElement("p");
-        errorMessage.className = "bot-message error-message";
-        errorMessage.textContent = "خطا: " + error.message;
-
-        chatMessages.appendChild(errorMessage);
+        answerElement.classList.add("error-message");
 
         console.error(error);
 
@@ -90,7 +102,9 @@ sendButton.addEventListener("click", askQuestion);
 
 // Send question by pressing Enter
 questionInput.addEventListener("keydown", function(event) {
+
     if (event.key === "Enter") {
         askQuestion();
     }
+
 });

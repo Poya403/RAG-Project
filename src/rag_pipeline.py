@@ -1,4 +1,3 @@
-
 from src.retrieval import retrieve
 from src.generation import generate_answer
 
@@ -12,15 +11,13 @@ def answer_question(question, db_dir, top_k=5):
 
     # Check retrieved results
     if not retrieved_chunks:
-        return "اطلاعات کافی در آیین‌نامه وجود ندارد."
+        yield "اطلاعات کافی در آیین‌نامه وجود ندارد."
+        return
 
     # Combine retrieved texts into one context
     context = "\n\n".join(
         chunk["text"] for chunk in retrieved_chunks
     )
 
-    print(context)
     # Generate the final answer
-    answer = generate_answer(question, context)
-
-    return answer
+    yield from generate_answer(question, context)
