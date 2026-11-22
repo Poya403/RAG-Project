@@ -1,12 +1,15 @@
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+
     font-family: system-ui, -apple-system, BlinkMacSystemFont,
         'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell,
         'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
+/* Main Layout */
 body {
     display: flex;
     width: 100%;
@@ -14,17 +17,20 @@ body {
     overflow: hidden;
 }
 
+/* Chat History */
 #ChatHistory {
     width: 300px;
     min-width: 180px;
     max-width: 500px;
     flex-shrink: 0;
+
     height: 100%;
     padding: 20px;
+
     background-color: #202938;
     color: white;
+
     text-align: center;
-    resize: horizontal;
     overflow-y: auto;
 }
 
@@ -33,6 +39,7 @@ body {
     margin-bottom: 30px;
 }
 
+/* Resizer */
 #resizer {
     width: 6px;
     flex-shrink: 0;
@@ -47,9 +54,11 @@ body {
     background-color: #2563eb;
 }
 
+/* Main Chat */
 #Chat {
     flex: 1;
     min-width: 200px;
+    height: 100%;
 
     display: flex;
     flex-direction: column;
@@ -59,24 +68,49 @@ body {
     background-color: #f5f7fb;
 }
 
-#Chat p {
-    font-size: 16px;
-    margin-bottom: 20px;
-    color: #333;
+/* Chat Content */
+#chat-content {
+    width: 70%;
+    max-width: 850px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
+/* Welcome Message */
+#welcome-msg {
+    font-size: 22px;
+    color: #333;
+    text-align: center;
+
+    margin-bottom: 25px;
+}
+
+/* Chat Messages */
+#chat-messages {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Chat Input */
 .chat-input-container {
     display: flex;
     align-items: center;
 
     width: 70%;
-    max-width: 700px;
+    max-width: 850px;
 
     padding: 8px 12px;
 
     background-color: white;
     border: 1px solid #ccc;
     border-radius: 25px;
+
+    margin-top: 15px;
     margin-bottom: 15px;
 }
 
@@ -98,7 +132,6 @@ body {
 .chat-input-container button {
     width: 40px;
     height: 40px;
-
     flex-shrink: 0;
 
     border: none;
@@ -111,9 +144,28 @@ body {
 }
 
 .chat-input-container button i {
-    font-size: 17;
+    font-size: 17px;
 }
 
 .chat-input-container button:hover {
     background-color: #1d4ed8;
+}
+
+
+#Chat.chat-started {
+    justify-content: flex-end;
+}
+
+#Chat.chat-started #chat-content {
+    flex: 1;
+    min-height: 0;
+
+    overflow-y: auto;
+
+    padding-top: 25px;
+    padding-bottom: 15px;
+}
+
+#Chat.chat-started .chat-input-container {
+    flex-shrink: 0;
 }

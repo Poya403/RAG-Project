@@ -1,6 +1,17 @@
+
+const chat = document.getElementById("Chat");
+const chatContent = document.getElementById("chat-content");
+
 const questionInput = document.getElementById("question-input");
 const sendButton = document.getElementById("send-button");
 const chatMessages = document.getElementById("chat-messages");
+const welcomeMessage = document.getElementById("welcome-msg");
+
+
+// Auto scroll to latest message
+function scrollToBottom() {
+    chatContent.scrollTop = chatContent.scrollHeight;
+}
 
 
 // Send question to Flask
@@ -12,6 +23,12 @@ async function askQuestion() {
     if (!question) {
         return;
     }
+
+    // Change chat layout
+    chat.classList.add("chat-started");
+
+    // Hide welcome message
+    welcomeMessage.hidden = true;
 
     // Display user's question
     const userMessage = document.createElement("p");
@@ -29,6 +46,9 @@ async function askQuestion() {
     answerElement.textContent = "در حال پردازش سوال...";
 
     chatMessages.appendChild(answerElement);
+
+    // Scroll to latest message
+    scrollToBottom();
 
     // Disable send button
     sendButton.disabled = true;
@@ -71,12 +91,14 @@ async function askQuestion() {
 
             answerElement.textContent += token;
 
-            // Auto scroll
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            // Auto scroll during streaming
+            scrollToBottom();
         }
 
         // Decode remaining characters
         answerElement.textContent += decoder.decode();
+
+        scrollToBottom();
 
     } catch (error) {
 
