@@ -1,0 +1,92 @@
+/* General Settings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+/* Chat History */
+#ChatHistory {
+    width: 300px;
+    min-width: 180px;
+    max-width: 500px;
+    flex-shrink: 0;
+    height: 100%;
+    padding: 20px;
+    background-color: #202938;
+    color: white;
+    text-align: center;
+    resize: horizontal;
+    overflow-y: auto;
+}
+
+#ChatHistory h1 {
+    font-size: 22px;
+    margin-bottom: 30px;
+}
+
+/* Chat */
+#Chat {
+    flex: 1;
+    min-width: 200px;
+    background-color: #f5f7fb;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#Chat p {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#Chat input {
+    width: 60%;
+    max-width: 600px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+}
+
+#resizer {
+    width: 6px;
+    flex-shrink: 0;
+    background-color: #cbd5e1;
+    cursor: col-resize;
+    transition: background-color 0.2s;
+}
+
+#resizer:hover {
+    background-color: #2563eb;
+}
+
+#Chat input:focus {
+    border-color: #2563eb;
+}
+
+#Chat button {
+    margin-top: 15px;
+    padding: 12px 30px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#Chat button:hover {
+    background-color: #1d4ed8;
+}
