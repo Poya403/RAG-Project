@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student RAG</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/send_request.css') }}">
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+<body>
+    <div id="Chat">
+        <div id="chat-content">
+            <p id="welcome-msg">دانشجو عزیز ، چطور میتوانم کمکتان کنم؟</p> 
+            <div id="chat-messages"></div>  
+        </div>
+         
+        <div class="chat-input-container">
+            <input type="text" id="question-input" placeholder="سوال خود را بپرسید">
+
+            <button id="send-button">
+                <i class="fa-solid fa-location-arrow"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="resizer"></div>
+
+    <div id="ChatHistory">
+        <h1>سامانه پرسش و پاسخ هوشمند دانشجویان</h1>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/resize_window.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/send_request.js') }}"></script>
+</body>
