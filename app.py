@@ -28,7 +28,7 @@ def ask():
 
         question = data.get("question", "").strip()
         conversation_id = data.get("conversation_id")
-
+        
         if not question:
             return jsonify({"error": "Please enter a question."}), 400
     

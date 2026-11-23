@@ -10,11 +10,16 @@ def generate_answer(question, db_vector_dir, db_chat_dir, conversation_id):
     )
 
     full_answer = ""
+    retrieved_sources = []
 
     for event in answer_generator:
          # Collect answer tokens
         if event["type"] == "token":
             full_answer += event["content"]
+
+        # Collect retrieved sources
+        elif event["type"] == "sources":
+            retrieved_sources = event["sources"]
 
         # Convert event to JSON
         json_data = json.dumps(
@@ -30,5 +35,6 @@ def generate_answer(question, db_vector_dir, db_chat_dir, conversation_id):
             db_chat_dir,
             conversation_id,
             "assistant",
-            full_answer
+            full_answer,
+            retrieved_sources
         )

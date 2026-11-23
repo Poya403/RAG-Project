@@ -7,7 +7,6 @@ def get_connection(DATABASE_PATH):
 
     return connection
 
-
 def initialize_database(DATABASE_PATH):
     DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
 
@@ -33,14 +32,27 @@ def initialize_database(DATABASE_PATH):
             ON DELETE CASCADE
         );
 
+        CREATE TABLE IF NOT EXISTS message_sources (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            message_id INTEGER NOT NULL,
+            content TEXT NOT NULL,
+
+            FOREIGN KEY (message_id)
+            REFERENCES messages(id)
+            ON DELETE CASCADE
+        );
+
         CREATE INDEX IF NOT EXISTS
         idx_messages_conversation_id
         ON messages(conversation_id);
+
+        CREATE INDEX IF NOT EXISTS
+        idx_message_sources_message_id
+        ON message_sources(message_id);
     """)
 
     connection.commit()
     connection.close()
-
 
 def create_conversation(DATABASE_PATH, title="گفتگو جدید"):
     connection = get_connection(DATABASE_PATH)
@@ -89,16 +101,28 @@ def rename_conversation(DATABASE_PATH, conversation_id, new_title):
 
     return cursor.rowcount > 0
 
-def save_message(DATABASE_PATH, conversation_id, role, content):
+def save_message(DATABASE_PATH, conversation_id, role, content, sources=None):
     connection = get_connection(DATABASE_PATH)
 
-    connection.execute(
+    cursor = connection.execute(
         """
         INSERT INTO messages (conversation_id, role, content)
         VALUES (?, ?, ?)
         """,
         (conversation_id, role, content)
     )
+
+    message_id = cursor.lastrowid
+
+    if sources:
+        for source in sources:
+            connection.execute(
+                """
+                INSERT INTO message_sources (message_id, content)
+                VALUES (?, ?)
+                """,
+                (message_id, source)
+            )
 
     connection.execute(
         """
@@ -112,6 +136,7 @@ def save_message(DATABASE_PATH, conversation_id, role, content):
     connection.commit()
     connection.close()
 
+    return message_id
 
 def get_messages(DATABASE_PATH, conversation_id):
     connection = get_connection(DATABASE_PATH)
@@ -131,7 +156,6 @@ def get_messages(DATABASE_PATH, conversation_id):
     connection.close()
 
     return messages
-
 
 def get_conversations(DATABASE_PATH):
     connection = get_connection(DATABASE_PATH)
