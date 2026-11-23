@@ -6,6 +6,7 @@
     <title>Student RAG</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/send_request.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/rename_modal.css') }}">
     <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
 </head>
@@ -33,8 +34,32 @@
             <span>گفت‌وگوی جدید</span>
             <i class="fa-solid fa-pen-to-square"></i>
         </button>
+        <div id="history">
+            <h2 id="history-msg">تاریخچه گفت و گو ها</h2>
+            <div id="conversation-titles"></div>
+        </div>
     </div>
 
+    <div id="rename-modal" class="modal">
+        <div class="modal-content">
+            <h3>تغییر عنوان گفت و گو</h3>
+
+            <input
+                type="text"
+                id="new-title"
+                placeholder="... عنوان جدید را وارد کنید"
+            >
+
+            <div class="modal-actions">
+                <button id="confirm-rename">ویرایش</button>
+                <button id="cancel-rename">لغو</button>
+            </div>
+
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/variables.js') }}"></script>
     <script src="{{ url_for('static', filename='js/resize_window.js') }}"></script>
     <script src="{{ url_for('static', filename='js/send_request.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/chat_history.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modal_controller.js') }}"></script>
 </body>

@@ -233,3 +233,58 @@ body {
     font-size: 15px;
     padding-right: 10px;
 }
+
+#history-msg {
+    text-align: right;
+    font-size: 15px;
+    margin-top: 30px;
+    color: #d1d5dc;
+}
+
+#conversation-titles{
+    margin-top: 15px;
+}
+
+.conversation-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    font-size: 15px;
+}
+
+.title-text {
+    flex: 1;
+    text-align: right;
+}
+
+.conversation-actions {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.action-menu {
+    display: none;
+    align-items: center;
+    gap: 10px;
+}
+
+.conversation-title.active .more-btn {
+    display: none;
+}
+
+.conversation-title.active .action-menu {
+    display: flex;
+}
+
+.more-btn,
+.rename-btn,
+.delete-btn {
+    background: transparent;
+    border: none;
+    color: #d1d5dc;
+    cursor: pointer;
+    font-size: 16px;
+    padding-right: 10px;
+}

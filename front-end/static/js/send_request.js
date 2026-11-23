@@ -1,11 +1,3 @@
-const chat = document.getElementById("Chat");
-const chatContent = document.getElementById("chat-content");
-
-const questionInput = document.getElementById("question-input");
-const sendButton = document.getElementById("send-button");
-const chatMessages = document.getElementById("chat-messages");
-const welcomeMessage = document.getElementById("welcome-msg");
-
 let isProcessing = false;
 
 // Update send button state
@@ -21,13 +13,9 @@ function scrollToBottom() {
     chatContent.scrollTop = chatContent.scrollHeight;
 }
 
-
 // Display retrieved sources
 function displaySources(sources) {
-
-    if (!sources || sources.length === 0) {
-        return;
-    }
+    if (!sources || sources.length === 0)  return;
 
     // Create sources container
     const sourcesContainer = document.createElement("div");
@@ -41,7 +29,6 @@ function displaySources(sources) {
 
     // Display each retrieved chunk
     sources.forEach((source, index) => {
-
         const sourceElement = document.createElement("div");
         sourceElement.className = "source-item";
 
@@ -62,15 +49,12 @@ function displaySources(sources) {
     scrollToBottom();
 }
 
-
 // Send question to Flask
 async function askQuestion() {
     const question = questionInput.value.trim();
 
     // Check empty question
-    if (!question || isProcessing) {
-        return;
-    }
+    if (!question || isProcessing) return;
 
     isProcessing = true;
     updateSendButton();
@@ -105,6 +89,10 @@ async function askQuestion() {
     sendButton.disabled = true;
 
     try {
+        // Create a new conversation if none exists
+        if (currentConversationId === null) {
+            await addConversation();
+        }
 
         // Send question to Flask
         const response = await fetch("/ask", {
@@ -113,7 +101,8 @@ async function askQuestion() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                question: question
+                question: question,
+                conversation_id: currentConversationId
             })
         });
 
@@ -127,99 +116,70 @@ async function askQuestion() {
         const reader = response.body.getReader();
         const decoder = new TextDecoder("utf-8");
 
-        // Store retrieved sources
         let retrievedSources = [];
-
-        // Store incomplete JSON lines
         let buffer = "";
 
-        // Clear loading message
         answerElement.textContent = "";
 
-        // Process each JSON line
         function processLine(line) {
-
             if (!line.trim()) {
                 return;
             }
 
             const event = JSON.parse(line);
 
-            // Handle retrieved sources
             if (event.type === "sources") {
                 retrievedSources = event.sources;
             }
 
-            // Handle generated answer tokens
             else if (event.type === "token") {
                 answerElement.textContent += event.content;
                 scrollToBottom();
             }
         }
 
-        // Read response chunks
         while (true) {
-
-            const { value, done } = await reader.read();
+            const {value, done} = await reader.read();
 
             if (done) break;
 
-            buffer += decoder.decode(value, {
-                stream: true
-            });
+            buffer += decoder.decode(value, {stream: true});
 
-            // Process complete JSON lines
             const lines = buffer.split("\n");
 
             buffer = lines.pop();
 
-            for (const line of lines) {
-                processLine(line);
-            }
+            for (const line of lines) processLine(line);
         }
 
-        // Decode remaining characters
         buffer += decoder.decode();
 
-        // Process final incomplete line
-        if (buffer.trim()) {
+        if (buffer.trim()) 
             processLine(buffer);
-        }
 
-        // Display retrieved sources after the answer
         displaySources(retrievedSources);
-
         scrollToBottom();
 
     } catch (error) {
-
         answerElement.textContent = "خطا: " + error.message;
-
         answerElement.classList.add("error-message");
-
         console.error(error);
 
     } finally {
-        // Enable send button
         isProcessing = false;
         updateSendButton();
         questionInput.focus();
-
     }
 }
-
 
 // Connect button to askQuestion
 sendButton.addEventListener("click", askQuestion);
 
-
 // Send question by pressing Enter
 questionInput.addEventListener("keydown", function(event) {
-
     if (event.key === "Enter") {
         askQuestion();
     }
-
 });
 
 updateSendButton();

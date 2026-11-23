@@ -1,4 +1,3 @@
-
 import sqlite3
 
 def get_connection(DATABASE_PATH):
@@ -43,8 +42,8 @@ def initialize_database(DATABASE_PATH):
     connection.close()
 
 
-def create_conversation(title="New Chat"):
-    connection = get_connection()
+def create_conversation(DATABASE_PATH, title="گفتگو جدید"):
+    connection = get_connection(DATABASE_PATH)
 
     cursor = connection.execute(
         "INSERT INTO conversations (title) VALUES (?)",
@@ -58,9 +57,40 @@ def create_conversation(title="New Chat"):
 
     return conversation_id
 
+def delete_conversation(DATABASE_PATH, conversation_id):
+    connection = get_connection(DATABASE_PATH)
 
-def save_message(conversation_id, role, content):
-    connection = get_connection()
+    cursor = connection.execute(
+        """
+        DELETE FROM conversations
+        WHERE id = ?
+        """, (conversation_id,)
+    )
+
+    connection.commit()
+    connection.close()
+
+    return cursor.rowcount > 0
+
+def rename_conversation(DATABASE_PATH, conversation_id, new_title):
+    connection = get_connection(DATABASE_PATH)
+
+    cursor = connection.execute(
+        """
+        UPDATE conversations
+        SET title = ?
+        WHERE id = ?
+        """,
+        (new_title, conversation_id)
+    )
+
+    connection.commit()
+    connection.close()
+
+    return cursor.rowcount > 0
+
+def save_message(DATABASE_PATH, conversation_id, role, content):
+    connection = get_connection(DATABASE_PATH)
 
     connection.execute(
         """
@@ -83,8 +113,8 @@ def save_message(conversation_id, role, content):
     connection.close()
 
 
-def get_messages(conversation_id):
-    connection = get_connection()
+def get_messages(DATABASE_PATH, conversation_id):
+    connection = get_connection(DATABASE_PATH)
 
     cursor = connection.execute(
         """
@@ -103,8 +133,8 @@ def get_messages(conversation_id):
     return messages
 
 
-def get_conversations():
-    connection = get_connection()
+def get_conversations(DATABASE_PATH):
+    connection = get_connection(DATABASE_PATH)
 
     cursor = connection.execute(
         """
