@@ -131,6 +131,12 @@ def renameConversation():
 
     except Exception as error:
         return jsonify({"error": str(error)}), 500
-        
+
+@app.route("/conversations/<int:conversation_id>", methods=["GET"])
+def load_conversation(conversation_id):
+    messages = get_messages(DB_DIR, conversation_id)
+
+    return jsonify(messages), 200
+
 if __name__ == "__main__":
     app.run(debug=True)

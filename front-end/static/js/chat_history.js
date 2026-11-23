@@ -19,6 +19,24 @@ async function getConversationTitles(){
     }
 }
 
+async function getConversationMessages(conversationId) {
+    try {
+        const response = await fetch(`/conversations/${conversationId}`);
+
+        const messages = await response.json();
+
+        if (!response.ok) {
+            throw new Error(messages.error || "Failed to retrieve messages.");
+        }
+
+        return messages;
+
+    } catch (error) {
+        console.error("Error loading conversation:", error);
+        return null;
+    }
+}
+
 async function displayConversationTitles() {
     const conversations = await getConversationTitles();
 
@@ -52,6 +70,44 @@ async function displayConversationTitles() {
     });
 }
 
+async function loadConversation(conversationId) {
+
+    // Prevent loading while processing a question
+    if (isProcessing) return;
+
+    const messages = await getConversationMessages(conversationId);
+
+    if (messages === null) return;
+
+    // Clear previous messages
+    chatMessages.innerHTML = "";
+
+    // Set current conversation
+    currentConversationId = Number(conversationId);
+
+    // Update chat layout
+    chat.classList.add("chat-started");
+    welcomeMessage.hidden = true;
+
+    // Display retrieved messages
+    messages.forEach(message => {
+
+        const messageElement = document.createElement("p");
+
+        if (message.role === "user") {
+            messageElement.className = "user-message";
+        } else {
+            messageElement.className = "bot-message";
+        }
+
+        messageElement.textContent = message.content;
+
+        chatMessages.appendChild(messageElement);
+    });
+
+    scrollToBottom();
+}
+
 async function addConversation() {
     try {
         const response = await fetch("/addConversation", {method: "POST"});
@@ -61,6 +117,8 @@ async function addConversation() {
         const conversation = await response.json();
         currentConversationId = conversation.conversation_id;
 
+        await displayConversationTitles();
+        
         return currentConversationId;
 
     } catch (error) {
@@ -127,7 +185,7 @@ function startNewChat() {
     chatMessages.innerHTML = "";
     currentConversationId = null;
     welcomeMessage.hidden = false;
-    chatContent.classList.remove("chat-started");
+    chat.classList.remove("chat-started");
     questionInput.value = "";
     updateSendButton();
 }
@@ -136,7 +194,6 @@ function startNewChat() {
 
 //events
 newChatButton.addEventListener("click", startNewChat);
-sendButton.addEventListener("click", addConversation)
 document.addEventListener("click", function(event) {
     const moreButton = event.target.closest(".more-btn");
 
@@ -191,6 +248,19 @@ document.getElementById("confirm-rename").addEventListener("click", async functi
         renameModal.style.display = "none";
     }
 
+});
+conversationTitles.addEventListener("click", function(event) {
+
+    // Ignore clicks on conversation actions
+    if (event.target.closest(".conversation-actions")) return;
+
+    const conversationTitle = event.target.closest(".conversation-title");
+
+    if (!conversationTitle) return;
+
+    const conversationId = conversationTitle.dataset.conversationId;
+
+    loadConversation(conversationId);
 });
 //---------------
 displayConversationTitles();
