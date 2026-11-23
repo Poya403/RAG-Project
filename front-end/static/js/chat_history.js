@@ -23,13 +23,13 @@ async function getConversationMessages(conversationId) {
     try {
         const response = await fetch(`/conversations/${conversationId}`);
 
-        const messages = await response.json();
+        const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(messages.error || "Failed to retrieve messages.");
+            throw new Error(data.error || "Failed to retrieve messages.");
         }
 
-        return messages;
+        return data;
 
     } catch (error) {
         console.error("Error loading conversation:", error);
@@ -98,11 +98,16 @@ async function loadConversation(conversationId) {
             messageElement.className = "user-message";
         } else {
             messageElement.className = "bot-message";
+            console.log("Assistant sources:", message.sources);
         }
 
         messageElement.textContent = message.content;
 
         chatMessages.appendChild(messageElement);
+
+        if (message.role === "assistant") {
+        displaySources(message.sources);
+    }
     });
 
     scrollToBottom();
@@ -182,6 +187,7 @@ async function renameConversation(conversationId, newTitle) {
 }
 
 function startNewChat() {
+    if (isProcessing) return;
     chatMessages.innerHTML = "";
     currentConversationId = null;
     welcomeMessage.hidden = false;
@@ -217,7 +223,14 @@ conversationTitles.addEventListener("click", async function(event) {
 
         const deleted = await deleteConversation(conversationId);
 
-        if (deleted) conversationTitle.remove();
+        if (deleted) {
+            conversationTitle.remove();
+
+            if (Number(currentConversationId) === Number(conversationId)) {
+                startNewChat();
+            }
+        }
+        
     }
 
 });
@@ -248,6 +261,19 @@ document.getElementById("confirm-rename").addEventListener("click", async functi
         renameModal.style.display = "none";
     }
 
+});
+conversationTitles.addEventListener("click", function(event) {
+
+    // Ignore clicks on conversation actions
+    if (event.target.closest(".conversation-actions")) return;
+
+    const conversationTitle = event.target.closest(".conversation-title");
+
+    if (!conversationTitle) return;
+
+    const conversationId = conversationTitle.dataset.conversationId;
+
+    loadConversation(conversationId);
 });
 conversationTitles.addEventListener("click", function(event) {
 

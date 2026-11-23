@@ -143,7 +143,7 @@ def get_messages(DATABASE_PATH, conversation_id):
 
     cursor = connection.execute(
         """
-        SELECT role, content, created_at
+        SELECT id, role, content, created_at
         FROM messages
         WHERE conversation_id = ?
         ORDER BY id ASC
@@ -153,8 +153,20 @@ def get_messages(DATABASE_PATH, conversation_id):
 
     messages = [dict(row) for row in cursor.fetchall()]
 
-    connection.close()
+    for message in messages:
+        cursor = connection.execute(
+            """
+            SELECT content
+            FROM message_sources
+            WHERE message_id = ?
+            ORDER BY id ASC
+            """,
+            (message["id"],)
+        )
 
+        message["sources"] = [row["content"] for row in cursor.fetchall()]
+
+    connection.close()
     return messages
 
 def get_conversations(DATABASE_PATH):
